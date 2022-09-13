@@ -13,6 +13,40 @@ public partial class MonkeysViewModel : BaseViewModel
         Title = "Monkey Finder";        this.monkeyService = monkeyService;
         this.connectivity = connectivity;
     }
+    [RelayCommand]
+    async Task GetClosestMonkey()
+    {
+        if (IsBusy || Monkeys.Count == 0)
+            return;
+        try
+        {
+            var location = await Geolocation.GetLastKnownLocationAsync();
+            if (location is null)
+            {
+                location = await Geolocation.GetLocationAsync(
+                    new GeolocationRequest
+                    {
+                        DesiredAccuracy = GeolocationAccuracy.Medium,
+                        Timeout = TimeSpan.FromSeconds(30),
+                    });
+            }
+            if (location is null)
+                return;
+
+            var first = Monkeys.OrderBy(m =>
+            location.CalculateDistance(m.Latitude, m.Longitude, DistanceUnits.Kilometers)).FirstOrDefault();
+
+            if (first is null)
+                return;
+
+            await Shell.Current.DisplayAlert("Closest Monkey", $"{first.Name} in {first.Location}", "Ok");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            await Shell.Current.DisplayAlert("Error!", $"Unable to get closest monkey: {ex.Message}", "OK");
+        }
+    }
 
     [RelayCommand]
     async Task GoToDetailsAsync(Monkey monkey)
