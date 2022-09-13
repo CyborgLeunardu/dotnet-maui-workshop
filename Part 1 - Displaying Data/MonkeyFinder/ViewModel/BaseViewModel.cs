@@ -12,7 +12,7 @@ public partial class BaseViewModel : ObservableObject
     public bool IsNotBusy => !IsBusy;
     public BaseViewModel()
     {
-        title
+
     }
 
     //public bool IsBusy;
