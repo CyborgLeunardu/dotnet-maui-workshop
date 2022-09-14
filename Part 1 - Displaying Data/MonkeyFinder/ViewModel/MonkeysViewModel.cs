@@ -10,7 +10,8 @@ public partial class MonkeysViewModel : BaseViewModel
     IConnectivity connectivity;
     public MonkeysViewModel(MonkeyService monkeyService, IConnectivity connectivity)
     {
-        Title = "Monkey Finder";        this.monkeyService = monkeyService;
+        Title = "Monkey Finder";
+        this.monkeyService = monkeyService;
         this.connectivity = connectivity;
     }
     [RelayCommand]
